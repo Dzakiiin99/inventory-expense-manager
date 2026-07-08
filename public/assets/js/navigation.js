@@ -1,39 +1,26 @@
-// Navigation Configuration for UMKM CRM Lite
-import { NAVIGATION } from './constants.js';
-
 /**
  * Setup navigation menu
  */
 export function setupNavigation() {
-    const sidebarNav = document.querySelector('.sidebar-nav ul');
-    if (!sidebarNav) {
-        console.error('Sidebar navigation not found');
-        return;
-    }
-    
-    // Generate navigation items
-    sidebarNav.innerHTML = NAVIGATION.MENU.map(item => `
-        <li>
-            <a href="${item.route}" id="${item.id}">
-                <i class="${item.icon}"></i>
-                <span>${item.label}</span>
-            </a>
-        </li>
-    `).join('');
-    
-    // Set active menu based on current route
-    updateActiveMenu();
-    
-    // Update active menu on navigation changes
-    window.addEventListener('hashchange', updateActiveMenu);
-}
+    const navItems = [
+        { id: "dashboard", icon: "fas fa-home", label: "Dashboard", path: "#dashboard" },
+        { id: "inventory", icon: "fas fa-boxes", label: "Inventory", path: "#inventory" },
+        { id: "expenses", icon: "fas fa-file-invoice-dollar", label: "Expenses", path: "#expenses" },
+        { id: "stock-movement", icon: "fas fa-exchange-alt", label: "Stock Movement", path: "#stock-movement" }
+    ];
 
-/**
- * Update active menu state
- */
-function updateActiveMenu() {
-    const currentRoute = window.location.hash.substring(1) || 'dashboard';
-    document.querySelectorAll('.sidebar-nav a').forEach(link => {
-        link.classList.toggle('active', link.id === currentRoute);
-    });
+    const navContainer = document.querySelector('.sidebar-nav ul');
+    if (navContainer) {
+        navContainer.innerHTML = navItems.map(item =>
+            `<li data-path="${item.path}">
+                <a href="${item.path}">
+                    <i class="${item.icon}"></i>
+                    <span>${item.label}</span>
+                </a>
+            </li>`
+        ).join('');
+        console.log("[Navigation] Setup completed");
+    } else {
+        console.error("[Navigation] Sidebar nav container not found");
+    }
 }

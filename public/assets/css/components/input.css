@@ -1,0 +1,27 @@
+/* components/input.css */
+.input-field {
+  width: 100%;
+  padding: .5rem;
+  border: 1px solid var(--border-color, #E5E7EB);
+  border-radius: 6px;
+  margin-top: .25rem;
+  box-sizing: border-box;
+  font-size: .9rem;
+}
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-primary, #3B82F6);
+  box-shadow: 0 0 0 2px rgba(59,130,246,.2);
+}
+.form-group {
+  margin-bottom: .75rem;
+}
+.form-group label {
+  display: block;
+  font-size: .85rem;
+  color: var(--text-secondary, #374151);
+}
+select.input-field {
+  background: #fff;
+  cursor: pointer;
+}

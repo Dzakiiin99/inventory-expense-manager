@@ -67,4 +67,35 @@ export function createButton(text, variant = 'primary', icon, onClick) {
     }
     
     return button;
+};
+
+// Button.render: returns an HTML string (safe for template literals / innerHTML)
+// and wires onClick via a single document-level delegated listener, so closures
+// work even when the button is injected as a string.
+const _handlers = new Map();
+let _seq = 0;
+let _delegated = false;
+
+function _ensureDelegation() {
+  if (_delegated) return;
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-btn-id]');
+    if (!btn) return;
+    const handler = _handlers.get(btn.getAttribute('data-btn-id'));
+    if (handler) handler();
+  });
+  _delegated = true;
 }
+
+export const Button = {
+  render: ({ text = '', variant = 'primary', icon, onClick, type, size } = {}) => {
+    _ensureDelegation();
+    const hasHandler = typeof onClick === 'function';
+    const id = hasHandler ? 'btn-' + (++_seq) : '';
+    if (hasHandler) _handlers.set(id, onClick);
+    const sizeCls = size === 'small' ? ' btn-small' : '';
+    const typeAttr = type ? ` type="${type}"` : '';
+    const iconHtml = icon ? `<i class="${icon}"></i> ` : '';
+    return `<button class="btn btn-${variant}${sizeCls}"${id ? ` data-btn-id="${id}"` : ''}${typeAttr}>${iconHtml}${text}</button>`;
+  }
+};

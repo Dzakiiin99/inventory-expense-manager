@@ -1,11 +1,7 @@
-// Layout Manager for UMKM CRM Lite
-import { renderSidebar } from './components/sidebar.js';
-import { renderNavbar } from './components/navbar.js';
-
 /**
- * Initialize the application layout
+ * Initialize application layout
  */
 export function initLayout() {
-    renderSidebar();
-    renderNavbar();
+    console.log("[Layout] Initialized");
+    // Tambahkan logika layout di sini (jika ada)
 }

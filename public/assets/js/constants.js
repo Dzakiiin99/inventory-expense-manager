@@ -30,48 +30,10 @@ export const TEXT = {
 
 export const NAVIGATION = {
     MENU: [
-        {
-            id: 'dashboard',
-            label: 'Dashboard',
-            icon: 'fas fa-tachometer-alt',
-            route: '#dashboard'
-        },
-        {
-            id: 'inventory',
-            label: 'Barang',
-            icon: 'fas fa-boxes',
-            route: '#inventory'
-        },
-        {
-            id: 'pelanggan',
-            label: 'Pelanggan',
-            icon: 'fas fa-users',
-            route: '#pelanggan'
-        },
-        {
-            id: 'transaksi',
-            label: 'Transaksi',
-            icon: 'fas fa-exchange-alt',
-            route: '#transaksi'
-        },
-        {
-            id: 'pengingat',
-            label: 'Pengingat',
-            icon: 'fas fa-bell',
-            route: '#pengingat'
-        },
-        {
-            id: 'laporan',
-            label: 'Laporan',
-            icon: 'fas fa-chart-bar',
-            route: '#laporan'
-        },
-        {
-            id: 'pengaturan',
-            label: 'Pengaturan',
-            icon: 'fas fa-cog',
-            route: '#pengaturan'
-        }
+        { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-tachometer-alt', route: '#dashboard' },
+        { id: 'inventory', label: 'Barang', icon: 'fas fa-boxes', route: '#inventory' },
+        { id: 'stock', label: 'Stok Masuk/Keluar', icon: 'fas fa-exchange-alt', route: '#stock' },
+        { id: 'expenses', label: 'Pengeluaran', icon: 'fas fa-wallet', route: '#expenses' }
     ]
 };
 

@@ -1,0 +1,36 @@
+/* components/card.css */
+.card {
+  background: var(--surface-color, #fff);
+  border: 1px solid var(--border-color, #E5E7EB);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.card h2 { margin-top: 0; font-size: 1.05rem; }
+
+.stat-card {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  background: var(--surface-color, #fff);
+  border: 1px solid var(--border-color, #E5E7EB);
+  border-radius: 8px;
+  padding: 1rem;
+}
+.stat-card-icon { font-size: 1.5rem; color: var(--color-primary, #3B82F6); }
+.stat-card-title { margin: 0; font-size: .8rem; color: var(--text-secondary, #6B7280); }
+.stat-card-value { margin: 0; font-size: 1.25rem; font-weight: 600; }
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}

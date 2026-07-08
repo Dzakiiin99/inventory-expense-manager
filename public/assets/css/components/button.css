@@ -1,0 +1,24 @@
+/* components/button.css */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  padding: .5rem .9rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+.btn-primary { background: var(--color-primary, #3B82F6); color: #fff; }
+.btn-primary:hover { background: var(--color-primary-hover, #2563EB); }
+.btn-secondary { background: #6B7280; color: #fff; }
+.btn-secondary:hover { background: #4B5563; }
+.btn-danger { background: #EF4444; color: #fff; }
+.btn-danger:hover { background: #DC2626; }
+.btn-info { background: #0EA5E9; color: #fff; }
+.btn-success { background: #10B981; color: #fff; }
+.btn-warning { background: #F59E0B; color: #fff; }
+.btn-small { padding: .3rem .6rem; font-size: .8rem; }
+.btn[disabled] { opacity: .6; cursor: not-allowed; }

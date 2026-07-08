@@ -19,3 +19,19 @@ export function createLoadingState(message) {
     
     return container;
 }
+
+// Loading: singleton overlay reusing the createLoadingState markup.
+let _loadingRoot = null;
+
+export const Loading = {
+  show: (message) => {
+    Loading.hide();
+    _loadingRoot = createLoadingState(message);
+    _loadingRoot.id = 'loading-root';
+    document.body.appendChild(_loadingRoot);
+  },
+  hide: () => {
+    if (_loadingRoot && _loadingRoot.parentNode) _loadingRoot.parentNode.removeChild(_loadingRoot);
+    _loadingRoot = null;
+  }
+};

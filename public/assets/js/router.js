@@ -4,6 +4,8 @@ import { TEXT } from './constants.js';
 
 // Route configuration
 import { InventoryPage } from './pages/inventory.js';
+import { StockMovementPage } from './pages/stock-movement.js';
+import { ExpensesPage } from './pages/expenses.js';
 
 const routes = {
     'dashboard': (container) => renderDashboard(container),
@@ -11,6 +13,14 @@ const routes = {
         // Render inventory page into the container
         container.innerHTML = '<div id="app"></div>';
         InventoryPage.render();
+    },
+    'stock': (container) => {
+        container.innerHTML = '<div id="app"></div>';
+        StockMovementPage.render(container.querySelector('#app'));
+    },
+    'expenses': (container) => {
+        container.innerHTML = '<div id="app"></div>';
+        ExpensesPage.render(container.querySelector('#app'));
     }
 };
 

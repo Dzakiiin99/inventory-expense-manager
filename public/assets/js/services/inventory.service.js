@@ -1,165 +1,128 @@
 // services/inventory.service.js
-// Inventory Service dengan data dummy dan simulasi loading 500ms
+// Inventory Service: localStorage + defensive programming + migrasi data lama
 
-const dummyItems = [
-  {
-    id: "1",
-    code: "INV-001",
-    name: "Beras Premium",
-    category: "Bahan Pokok",
-    stock: 50,
-    unit: "Kg",
-    price: 12000,
-    status: "active"
-  },
-  {
-    id: "2",
-    code: "INV-002",
-    name: "Minyak Goreng",
-    category: "Bahan Pokok",
-    stock: 30,
-    unit: "Liter",
-    price: 15000,
-    status: "active"
-  },
-  {
-    id: "3",
-    code: "INV-003",
-    name: "Gula Pasir",
-    category: "Bahan Pokok",
-    stock: 5,
-    unit: "Kg",
-    price: 10000,
-    status: "inactive"
-  },
-  {
-    id: "4",
-    code: "INV-004",
-    name: "Sabun Mandi",
-    category: "Kebutuhan Rumah Tangga",
-    stock: 25,
-    unit: "Pcs",
-    price: 5000,
-    status: "active"
-  },
-  {
-    id: "5",
-    code: "INV-005",
-    name: "Shampo",
-    category: "Kebutuhan Rumah Tangga",
-    stock: 20,
-    unit: "Pcs",
-    price: 8000,
-    status: "active"
-  },
-  {
-    id: "6",
-    code: "INV-006",
-    name: "Tepung Terigu",
-    category: "Bahan Pokok",
-    stock: 40,
-    unit: "Kg",
-    price: 9000,
-    status: "active"
-  },
-  {
-    id: "7",
-    code: "INV-007",
-    name: "Deterjen",
-    category: "Kebutuhan Rumah Tangga",
-    stock: 15,
-    unit: "Pcs",
-    price: 7000,
-    status: "active"
-  },
-  {
-    id: "8",
-    code: "INV-008",
-    name: "Kopi Bubuk",
-    category: "Minuman",
-    stock: 10,
-    unit: "Pcs",
-    price: 12000,
-    status: "active"
-  },
-  {
-    id: "9",
-    code: "INV-009",
-    name: "Susu Bubuk",
-    category: "Minuman",
-    stock: 3,
-    unit: "Pcs",
-    price: 20000,
-    status: "inactive"
-  },
-  {
-    id: "10",
-    code: "INV-010",
-    name: "Mie Instan",
-    category: "Makanan",
-    stock: 100,
-    unit: "Pcs",
-    price: 3000,
-    status: "active"
+const STORAGE_KEY = 'umkm_crm_inventory';
+const LEGACY_KEY = 'stok_umkm_barang';
+
+// ---- Defensive storage helpers (di-port dari backup) ----
+function isLocalStorageAvailable() {
+  try {
+    const k = '__test__';
+    localStorage.setItem(k, k);
+    localStorage.removeItem(k);
+    return true;
+  } catch (e) {
+    console.error('localStorage tidak tersedia:', e);
+    return false;
   }
-];
+}
 
-let items = [...dummyItems];
+function safeGet(key) {
+  try {
+    if (!isLocalStorageAvailable()) {
+      return JSON.parse(sessionStorage.getItem(key)) || [];
+    }
+    const raw = localStorage.getItem(key);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.error(`Gagal membaca ${key}:`, e);
+    return [];
+  }
+}
 
-// Auto-generate kode barang
-const generateItemCode = (id) => {
-  return `INV-${String(id).padStart(3, "0")}`;
-};
+function safeSet(key, data) {
+  try {
+    if (!isLocalStorageAvailable()) {
+      sessionStorage.setItem(key, JSON.stringify(data));
+      return true;
+    }
+    localStorage.setItem(key, JSON.stringify(data));
+    return true;
+  } catch (e) {
+    console.error(`Gagal menyimpan ${key}:`, e);
+    return false;
+  }
+}
+
+// ---- Migrasi data lama -> model baru (backward compatible) ----
+function migrateLegacyIfNeeded() {
+  const existing = safeGet(STORAGE_KEY);
+  if (existing.length > 0) return; // sudah migrasi
+  const legacy = safeGet(LEGACY_KEY);
+  if (legacy.length === 0) return; // tidak ada data lama
+  const migrated = legacy.map((item) => ({
+    id: String(item.id),
+    code: `INV-${String(item.id).padStart(3, '0')}`,
+    name: item.nama || '',
+    category: '',
+    stock: Number(item.stok) || 0,
+    unit: '',
+    price: Number(item.harga) || 0,
+    status: 'active'
+  }));
+  safeSet(STORAGE_KEY, migrated);
+}
+
+function generateCode(id) {
+  return `INV-${String(id).padStart(3, '0')}`;
+}
+
+// Inisialisasi migrasi saat module load
+migrateLegacyIfNeeded();
 
 export const InventoryService = {
-  getAllItems: () => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve([...items]), 500); // Simulasi loading
-    });
-  },
-  getItemById: (id) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const item = items.find((item) => item.id === id);
-        resolve(item ? { ...item } : null);
-      }, 500);
-    });
-  },
-  addItem: (newItem) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const id = (items.length + 1).toString();
-        const code = generateItemCode(id);
-        const item = { id, code, ...newItem };
-        items.push(item);
-        resolve(item);
-      }, 500);
-    });
-  },
-  updateItem: (id, updatedItem) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const index = items.findIndex((item) => item.id === id);
-        if (index === -1) {
-          resolve(null);
-          return;
-        }
-        items[index] = { ...items[index], ...updatedItem };
-        resolve(items[index]);
-      }, 500);
-    });
-  },
-  deleteItem: (id) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const index = items.findIndex((item) => item.id === id);
-        if (index === -1) {
-          resolve(false);
-          return;
-        }
-        items.splice(index, 1);
-        resolve(true);
-      }, 500);
-    });
-  }
+  getAllItems: () => new Promise((resolve) => {
+    setTimeout(() => resolve([...safeGet(STORAGE_KEY)]), 500);
+  }),
+  getItemById: (id) => new Promise((resolve) => {
+    setTimeout(() => {
+      const item = safeGet(STORAGE_KEY).find((i) => i.id === id);
+      resolve(item ? { ...item } : null);
+    }, 500);
+  }),
+  addItem: (newItem) => new Promise((resolve) => {
+    setTimeout(() => {
+      const items = safeGet(STORAGE_KEY);
+      const id = (items.length + 1).toString();
+      const item = { id, code: generateCode(id), status: 'active', ...newItem };
+      items.push(item);
+      safeSet(STORAGE_KEY, items);
+      resolve(item);
+    }, 500);
+  }),
+  updateItem: (id, updatedItem) => new Promise((resolve) => {
+    setTimeout(() => {
+      const items = safeGet(STORAGE_KEY);
+      const idx = items.findIndex((i) => i.id === id);
+      if (idx === -1) { resolve(null); return; }
+      items[idx] = { ...items[idx], ...updatedItem };
+      safeSet(STORAGE_KEY, items);
+      resolve(items[idx]);
+    }, 500);
+  }),
+  deleteItem: (id) => new Promise((resolve) => {
+    setTimeout(() => {
+      const items = safeGet(STORAGE_KEY);
+      const idx = items.findIndex((i) => i.id === id);
+      if (idx === -1) { resolve(false); return; }
+      items.splice(idx, 1);
+      safeSet(STORAGE_KEY, items);
+      resolve(true);
+    }, 500);
+  }),
+  // Helper untuk update stok (dipakai stock-movement)
+  adjustStock: (id, delta) => new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const items = safeGet(STORAGE_KEY);
+      const idx = items.findIndex((i) => i.id === id);
+      if (idx === -1) { reject(new Error('Barang tidak ditemukan')); return; }
+      const newStock = items[idx].stock + delta;
+      if (newStock < 0) { reject(new Error('Stok tidak cukup')); return; }
+      items[idx] = { ...items[idx], stock: newStock };
+      safeSet(STORAGE_KEY, items);
+      resolve(items[idx]);
+    }, 500);
+  })
 };
