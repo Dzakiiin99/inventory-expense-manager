@@ -12,6 +12,7 @@
 @import url('./components/empty-state.css');
 @import url('./components/table.css');
 @import url('./components/modal.css');
+@import url('./components/toolbar.css');
 @import url('./layout/section-header.css');
 @import url('./layout/page-title.css');
 @import url('./layout/action-bar.css');

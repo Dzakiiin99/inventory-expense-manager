@@ -1,0 +1,51 @@
+/* Toolbar: search / filter / sort / pagination untuk halaman Inventory.
+   Dibuat terpisah (Single Responsibility) dan di-import via style.css,
+   mengikuti pola komponen CSS project (button.css, table.css, dll). */
+
+.inventory-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.inventory-toolbar .input-field {
+  flex: 1 1 240px;
+  max-width: 360px;
+}
+
+.inventory-toolbar select {
+  flex: 0 0 auto;
+}
+
+/* Select filter: samakan style dgn input-field tapi jangan flex-grow */
+.inventory-toolbar .input-field-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  min-width: 140px;
+}
+
+/* Pagination (dipakai Feature 4) */
+.inventory-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.inventory-pagination button {
+  min-width: 36px;
+}
+
+.inventory-pagination .pagination-info {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-left: 0.5rem;
+}
