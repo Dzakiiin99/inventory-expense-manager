@@ -72,8 +72,8 @@ const renderStats = () => {
 
   const totalBarang = items.length;
   const nilaiInventory = items.reduce((sum, i) => sum + ((i.price || 0) * (i.stock || 0)), 0);
-  const stokRendah = items.filter(i => i.stock > 0 && i.stock <= 5).length;
-  const stokHabis = items.filter(i => i.stock <= 0).length;
+  const stokRendah = items.filter(i => getStockLevel(i.stock) === 'rendah').length;
+  const stokHabis = items.filter(i => getStockLevel(i.stock) === 'habis').length;
 
   statsContainer.innerHTML = '';
   statsContainer.appendChild(createStatCard('Total Barang', totalBarang, 'fas fa-boxes', 'primary'));
