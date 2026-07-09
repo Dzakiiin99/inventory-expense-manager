@@ -3,14 +3,7 @@
 
 import { Button } from "./button.js";
 import { Badge } from "./badge.js";
-import { formatCurrency, escapeHtml } from "../utils/index.js";
-
-// Fungsi untuk menentukan warna badge stok
-const getStockBadgeVariant = (stock) => {
-  if (stock > 20) return "success";
-  if (stock > 5) return "warning";
-  return "danger";
-};
+import { formatCurrency, escapeHtml, getStockBadgeVariant } from "../utils/index.js";
 
 export const InventoryTable = {
   render: (items, onEdit, onDelete, onDetail) => {

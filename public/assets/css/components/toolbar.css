@@ -49,3 +49,23 @@
   color: #6b7280;
   margin-left: 0.5rem;
 }
+
+/* Responsive: mobile */
+@media (max-width: 768px) {
+  .inventory-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .inventory-toolbar .input-field,
+  .inventory-toolbar .input-field-select {
+    flex: 1 1 auto;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .inventory-pagination {
+    justify-content: center;
+  }
+}

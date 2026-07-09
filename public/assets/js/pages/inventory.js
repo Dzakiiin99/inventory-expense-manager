@@ -8,7 +8,7 @@ import { Loading } from "../components/loading-state.js";
 import { Modal } from "../components/modal.js";
 import { Button } from "../components/button.js";
 import { Toast } from "../components/toast.js";
-import { formatCurrency, escapeHtml } from "../utils/index.js";
+import { formatCurrency, escapeHtml, getStockLevel } from "../utils/index.js";
 import { createStatCard } from "../components/design-system/card.js";
 
 let items = [];
@@ -21,11 +21,15 @@ let currentPage = 1;
 const PAGE_SIZE = 10;
 const collator = new Intl.Collator('id', { sensitivity: 'base', numeric: false });
 
-// Pure: level stok (konsisten dgn badge threshold: ≤5 = danger → 'rendah')
-const getStockLevel = (stock) => {
-  if (stock <= 0) return 'habis';
-  if (stock <= 5) return 'rendah';
-  return 'aman';
+// Strategy map untuk sorting (Open/Closed: tambah opsi baru = tambah entry, bukan ubah logic)
+const SORTERS = {
+  'name-asc':     (a, b) => collator.compare(a.name || '', b.name || ''),
+  'name-desc':    (a, b) => collator.compare(b.name || '', a.name || ''),
+  'price-asc':    (a, b) => (a.price || 0) - (b.price || 0),
+  'price-desc':   (a, b) => (b.price || 0) - (a.price || 0),
+  'stock-asc':    (a, b) => (a.stock || 0) - (b.stock || 0),
+  'stock-desc':   (a, b) => (b.stock || 0) - (a.stock || 0),
+  'category-asc': (a, b) => collator.compare(a.category || '', b.category || ''),
 };
 
 // Pure filter pipeline: search → kategori → stok → sort
@@ -49,29 +53,8 @@ const getVisibleItems = () => {
 
   // Sort (pure, non-mutating via spread)
   const sorted = [...result];
-  switch (sortBy) {
-    case 'name-asc':
-      sorted.sort((a, b) => collator.compare(a.name || '', b.name || ''));
-      break;
-    case 'name-desc':
-      sorted.sort((a, b) => collator.compare(b.name || '', a.name || ''));
-      break;
-    case 'price-asc':
-      sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
-      break;
-    case 'price-desc':
-      sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
-      break;
-    case 'stock-asc':
-      sorted.sort((a, b) => (a.stock || 0) - (b.stock || 0));
-      break;
-    case 'stock-desc':
-      sorted.sort((a, b) => (b.stock || 0) - (a.stock || 0));
-      break;
-    case 'category-asc':
-      sorted.sort((a, b) => collator.compare(a.category || '', b.category || ''));
-      break;
-  }
+  const sorter = SORTERS[sortBy];
+  if (sorter) sorted.sort(sorter);
   return sorted;
 };
 
