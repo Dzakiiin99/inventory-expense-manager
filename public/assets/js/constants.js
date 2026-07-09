@@ -8,6 +8,7 @@ export const COLORS = {
     SUCCESS: '#10B981',
     DANGER: '#EF4444',
     WARNING: '#F59E0B',
+    INFO: '#06B6D4',
     BACKGROUND: '#F9FAFB',
     SURFACE: '#FFFFFF',
     TEXT: '#111827',
@@ -27,39 +28,3 @@ export const TEXT = {
     LOADING: 'Memuat...',
     EMPTY_STATE: 'Tidak ada data yang ditemukan'
 };
-
-export const NAVIGATION = {
-    MENU: [
-        { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-tachometer-alt', route: '#dashboard' },
-        { id: 'inventory', label: 'Barang', icon: 'fas fa-boxes', route: '#inventory' },
-        { id: 'stock', label: 'Stok Masuk/Keluar', icon: 'fas fa-exchange-alt', route: '#stock' },
-        { id: 'expenses', label: 'Pengeluaran', icon: 'fas fa-wallet', route: '#expenses' }
-    ]
-};
-
-export const DASHBOARD_STATS = [
-    {
-        title: 'Total Pelanggan',
-        value: '45',
-        icon: 'fas fa-users',
-        variant: 'primary'
-    },
-    {
-        title: 'Transaksi Bulan Ini',
-        value: '128',
-        icon: 'fas fa-exchange-alt',
-        variant: 'success'
-    },
-    {
-        title: 'Pengingat Hari Ini',
-        value: '3',
-        icon: 'fas fa-bell',
-        variant: 'warning'
-    },
-    {
-        title: 'Pendapatan Bulan Ini',
-        value: 'Rp 5.200.000',
-        icon: 'fas fa-chart-line',
-        variant: 'danger'
-    }
-];

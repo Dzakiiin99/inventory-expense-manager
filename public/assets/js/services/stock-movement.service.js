@@ -1,19 +1,6 @@
 // services/stock-movement.service.js
 import { InventoryService } from './inventory.service.js';
-
-const KEY_IN = 'umkm_crm_stock_in';
-const KEY_OUT = 'umkm_crm_stock_out';
-
-function safeGet(key) {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? (Array.isArray(JSON.parse(raw)) ? JSON.parse(raw) : []) : [];
-  } catch (e) { console.error(e); return []; }
-}
-function safeSet(key, data) {
-  try { localStorage.setItem(key, JSON.stringify(data)); return true; }
-  catch (e) { console.error(e); return false; }
-}
+import { safeGet, safeSet, STORAGE_KEYS } from '../utils/storage.js';
 
 function pushHistory(key, record) {
   const list = safeGet(key);
@@ -27,7 +14,7 @@ export const StockMovementService = {
     if (!item) throw new Error('Barang tidak ditemukan');
     if (!Number.isInteger(jumlah) || jumlah <= 0) throw new Error('Jumlah harus positif');
     await InventoryService.adjustStock(barangId, jumlah);
-    pushHistory(KEY_IN, {
+    pushHistory(STORAGE_KEYS.STOCK_IN, {
       id: Date.now().toString(),
       barangId,
       namaBarang: item.name,
@@ -42,7 +29,7 @@ export const StockMovementService = {
     if (!Number.isInteger(jumlah) || jumlah <= 0) throw new Error('Jumlah harus positif');
     if (item.stock < jumlah) throw new Error('Stok tidak cukup');
     await InventoryService.adjustStock(barangId, -jumlah);
-    pushHistory(KEY_OUT, {
+    pushHistory(STORAGE_KEYS.STOCK_OUT, {
       id: Date.now().toString(),
       barangId,
       namaBarang: item.name,
@@ -51,6 +38,6 @@ export const StockMovementService = {
     });
     return true;
   },
-  getStockInHistory: () => new Promise((res) => setTimeout(() => res([...safeGet(KEY_IN)]), 300)),
-  getStockOutHistory: () => new Promise((res) => setTimeout(() => res([...safeGet(KEY_OUT)]), 300))
+  getStockInHistory: () => new Promise((res) => setTimeout(() => res([...safeGet(STORAGE_KEYS.STOCK_IN)]), 300)),
+  getStockOutHistory: () => new Promise((res) => setTimeout(() => res([...safeGet(STORAGE_KEYS.STOCK_OUT)]), 300))
 };

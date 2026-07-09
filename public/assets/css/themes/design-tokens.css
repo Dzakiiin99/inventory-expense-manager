@@ -11,8 +11,8 @@
     --danger-hover: #DC2626;
     --warning-color: #F59E0B;
     --warning-hover: #D97706;
-    --info-color: #3B82F6;
-    --info-hover: #2563EB;
+    --info-color: #06B6D4;
+    --info-hover: #0891B2;
     --text-color: #111827;
     --text-secondary: #6B7280;
     --text-light: #FFFFFF;
@@ -56,6 +56,11 @@
     /* Transitions */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
+    
+    /* Layout */
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 80px;
+    --navbar-height: 64px;
     
     /* Breakpoints */
     --breakpoint-mobile: 768px;

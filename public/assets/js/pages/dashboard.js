@@ -3,6 +3,7 @@ import { createStatCard } from '../components/design-system/card.js';
 import { InventoryService } from '../services/inventory.service.js';
 import { ExpenseService } from '../services/expense.service.js';
 import { Loading } from '../components/loading-state.js';
+import { formatCurrency } from '../utils/index.js';
 
 export async function renderDashboard(container) {
   Loading.show();
@@ -19,8 +20,8 @@ export async function renderDashboard(container) {
     const grid = document.createElement('div');
     grid.className = 'dashboard-grid';
     grid.appendChild(createStatCard('Total Barang', totalBarang, 'fas fa-boxes', 'primary'));
-    grid.appendChild(createStatCard('Nilai Stok', `Rp ${nilaiStok.toLocaleString('id-ID')}`, 'fas fa-coins', 'success'));
-    grid.appendChild(createStatCard('Total Pengeluaran', `Rp ${totalPengeluaran.toLocaleString('id-ID')}`, 'fas fa-wallet', 'warning'));
+    grid.appendChild(createStatCard('Nilai Stok', formatCurrency(nilaiStok), 'fas fa-coins', 'success'));
+    grid.appendChild(createStatCard('Total Pengeluaran', formatCurrency(totalPengeluaran), 'fas fa-wallet', 'warning'));
     container.appendChild(grid);
   } catch (e) {
     console.error(e);

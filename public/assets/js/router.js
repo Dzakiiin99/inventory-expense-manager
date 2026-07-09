@@ -10,9 +10,8 @@ import { ExpensesPage } from './pages/expenses.js';
 const routes = {
     'dashboard': (container) => renderDashboard(container),
     'inventory': (container) => {
-        // Render inventory page into the container
         container.innerHTML = '<div id="app"></div>';
-        InventoryPage.render();
+        InventoryPage.render(container.querySelector('#app'));
     },
     'stock': (container) => {
         container.innerHTML = '<div id="app"></div>';
@@ -42,7 +41,11 @@ export function initRouter() {
     window.addEventListener('hashchange', () => {
         const newHash = window.location.hash.substring(1) || 'dashboard';
         loadRoute(newHash, contentArea);
+        updateBreadcrumb();
     });
+    
+    // Setup sidebar navigation active state
+    setupSidebarActiveState();
 }
 
 /**
@@ -63,4 +66,48 @@ function loadRoute(route, container) {
         window.location.hash = '#dashboard';
         renderDashboard(container);
     }
+}
+
+/**
+ * Update breadcrumb based on current page
+ */
+function updateBreadcrumb() {
+    const breadcrumb = document.querySelector('.breadcrumb span');
+    if (!breadcrumb) return;
+    
+    const hash = window.location.hash.substring(1) || 'dashboard';
+    const pageNames = {
+        'dashboard': 'Dashboard',
+        'inventory': 'Inventory',
+        'stock': 'Stock Movement',
+        'expenses': 'Pengeluaran'
+    };
+    
+    breadcrumb.textContent = pageNames[hash] || 'Dashboard';
+}
+
+/**
+ * Setup sidebar navigation active state
+ */
+function setupSidebarActiveState() {
+    const navLinks = document.querySelectorAll('.sidebar-nav a');
+    
+    function updateActiveLink() {
+        const hash = window.location.hash.substring(1) || 'dashboard';
+        
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href').substring(1);
+            if (href === hash) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+    
+    // Update on load
+    updateActiveLink();
+    
+    // Update on hash change
+    window.addEventListener('hashchange', updateActiveLink);
 }

@@ -3,6 +3,7 @@
 
 import { Button } from "./button.js";
 import { Badge } from "./badge.js";
+import { formatCurrency, escapeHtml } from "../utils/index.js";
 
 // Fungsi untuk menentukan warna badge stok
 const getStockBadgeVariant = (stock) => {
@@ -39,16 +40,16 @@ export const InventoryTable = {
         <tbody>
           ${items.map(item => `
             <tr key=${item.id}>
-              <td>${item.code}</td>
-              <td>${item.name}</td>
-              <td>${item.category}</td>
+              <td>${escapeHtml(item.code)}</td>
+              <td>${escapeHtml(item.name)}</td>
+              <td>${escapeHtml(item.category)}</td>
               <td>
                 <span class="badge badge-${getStockBadgeVariant(item.stock)}">
                   ${item.stock}
                 </span>
               </td>
-              <td>${item.unit}</td>
-              <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.price)}</td>
+              <td>${escapeHtml(item.unit)}</td>
+              <td>${formatCurrency(item.price)}</td>
               <td>${item.status === 'active' ? 'Aktif' : 'Nonaktif'}</td>
               <td class="table-actions">
                 ${Button.render({

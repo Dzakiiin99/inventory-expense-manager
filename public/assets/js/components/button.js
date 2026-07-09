@@ -4,7 +4,7 @@ import { COLORS } from '../constants.js';
 /**
  * Create a button component
  * @param {string} text - Button text
- * @param {string} [variant='primary'] - Button variant (primary, secondary, success, danger, text)
+ * @param {string} [variant='primary'] - Button variant (primary, secondary, success, danger, info, text)
  * @param {string} [icon] - Optional icon class (e.g., 'fas fa-plus')
  * @param {function} [onClick] - Click handler
  * @returns {HTMLElement} Button element
@@ -29,6 +29,11 @@ export function createButton(text, variant = 'primary', icon, onClick) {
         case 'danger':
             bgColor = COLORS.DANGER;
             hoverColor = '#DC2626';
+            textColor = COLORS.SURFACE;
+            break;
+        case 'info':
+            bgColor = '#06B6D4';
+            hoverColor = '#0891B2';
             textColor = COLORS.SURFACE;
             break;
         case 'text':

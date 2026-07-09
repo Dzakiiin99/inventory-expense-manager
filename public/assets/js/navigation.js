@@ -6,7 +6,7 @@ export function setupNavigation() {
         { id: "dashboard", icon: "fas fa-home", label: "Dashboard", path: "#dashboard" },
         { id: "inventory", icon: "fas fa-boxes", label: "Inventory", path: "#inventory" },
         { id: "expenses", icon: "fas fa-file-invoice-dollar", label: "Expenses", path: "#expenses" },
-        { id: "stock-movement", icon: "fas fa-exchange-alt", label: "Stock Movement", path: "#stock-movement" }
+        { id: "stock", icon: "fas fa-exchange-alt", label: "Stock Movement", path: "#stock" }
     ];
 
     const navContainer = document.querySelector('.sidebar-nav ul');

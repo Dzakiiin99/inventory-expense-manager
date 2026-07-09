@@ -1,6 +1,8 @@
 // components/input.js
 // Reusable Input component
 
+import { escapeHtml } from '../utils/index.js';
+
 export const Input = {
   render: ({ label, name, value = '', type = 'text', placeholder = '', required = false, min } = {}) => {
     const requiredAttr = required ? 'required' : '';
@@ -12,8 +14,8 @@ export const Input = {
           type="${type}"
           id="${name}"
           name="${name}"
-          value="${value}"
-          placeholder="${placeholder}"
+          value="${escapeHtml(value)}"
+          placeholder="${escapeHtml(placeholder)}"
           ${requiredAttr}
           ${minAttr}
           class="input-field"

@@ -3,15 +3,9 @@ import { ExpenseService } from '../services/expense.service.js';
 import { Loading } from '../components/loading-state.js';
 import { Button } from '../components/button.js';
 import { Modal } from '../components/modal.js';
+import { Toast } from '../components/toast.js';
 import { createEmptyState } from '../components/empty-state.js';
-
-const fmtDate = (iso) => new Date(iso).toLocaleDateString('id-ID');
-const fmtRp = (n) => `Rp ${Number(n).toLocaleString('id-ID')}`;
-
-// Defensive: escape user-controlled strings before injecting into innerHTML (XSS prevention).
-const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => (
-  { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
-));
+import { formatCurrency, formatDate, escapeHtml } from '../utils/index.js';
 
 const renderExpensesPage = async (container) => {
   Loading.show();
@@ -21,8 +15,8 @@ const renderExpensesPage = async (container) => {
       <tr>
         <td>${escapeHtml(e.deskripsi)}</td>
         <td>${escapeHtml(e.kategori)}</td>
-        <td>${fmtRp(e.jumlah)}</td>
-        <td>${fmtDate(e.tanggal)}</td>
+        <td>${formatCurrency(e.jumlah)}</td>
+        <td>${formatDate(e.tanggal)}</td>
         <td class="table-actions">${Button.render({ text: 'Hapus', variant: 'danger', size: 'small', onClick: () => deleteExpense(e.id, container) })}</td>
       </tr>`).join('');
 
@@ -65,9 +59,10 @@ const renderExpensesPage = async (container) => {
           kategori: f.get('kategori'),
           jumlah: parseFloat(f.get('jumlah'))
         });
+        Toast.show('Pengeluaran berhasil ditambahkan', 'success');
         renderExpensesPage(container);
       } catch (err) {
-        alert(typeof err === 'object' ? Object.values(err).join('\n') : err.message);
+        Toast.show(typeof err === 'object' ? Object.values(err).join('\n') : err.message, 'error');
       }
     });
   } catch (e) {
@@ -84,6 +79,7 @@ const deleteExpense = (id, container) => {
     content: 'Yakin hapus pengeluaran ini?',
     onConfirm: async () => {
       await ExpenseService.delete(id);
+      Toast.show('Pengeluaran berhasil dihapus', 'success');
       renderExpensesPage(container);
     }
   });
