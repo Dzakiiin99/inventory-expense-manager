@@ -8,6 +8,8 @@ import { Loading } from "../components/loading-state.js";
 import { Modal } from "../components/modal.js";
 import { Button } from "../components/button.js";
 import { Toast } from "../components/toast.js";
+import { exportInventoryCsv, parseInventoryCsv, applyInventoryImport } from "../services/export.service.js";
+import { downloadFile } from "../utils/csv.js";
 import { formatCurrency, escapeHtml, getStockLevel } from "../utils/index.js";
 import { createStatCard } from "../components/design-system/card.js";
 
@@ -18,6 +20,7 @@ let filterCategory = '';
 let filterStock = '';
 let sortBy = 'name-asc';
 let currentPage = 1;
+let importParsed = null; // hasil parse CSV import, untuk preview sebelum apply
 const PAGE_SIZE = 10;
 const collator = new Intl.Collator('id', { sensitivity: 'base', numeric: false });
 
@@ -146,11 +149,25 @@ const renderInventoryPage = async (container) => {
       <div class="inventory-page">
         <div class="page-header">
           <h1>Daftar Barang</h1>
-          ${Button.render({
-            text: "Tambah Barang",
-            onClick: showAddForm,
-            variant: "primary"
-          })}
+          <div class="header-actions">
+            ${Button.render({
+              text: "Tambah Barang",
+              onClick: showAddForm,
+              variant: "primary"
+            })}
+            ${Button.render({
+              text: "Export CSV",
+              onClick: exportInventory,
+              variant: "secondary",
+              icon: "fas fa-download"
+            })}
+            ${Button.render({
+              text: "Import CSV",
+              onClick: showImportModal,
+              variant: "secondary",
+              icon: "fas fa-upload"
+            })}
+          </div>
         </div>
         <div id="inventory-stats" class="dashboard-grid"></div>
         <div class="inventory-toolbar">
@@ -347,6 +364,122 @@ const handleFormSubmit = async (e) => {
   } catch (error) {
     console.error("Gagal menyimpan barang:", error);
     Toast.show("Gagal menyimpan barang. Silakan coba lagi.", 'error');
+  }
+};
+
+// ---- Sprint 6: Export / Import CSV ----
+const exportInventory = () => {
+  try {
+    const csv = exportInventoryCsv();
+    downloadFile('inventori.csv', csv, 'text/csv;charset=utf-8');
+    Toast.show('Data inventori berhasil diekspor', 'success');
+  } catch (error) {
+    console.error('Gagal mengekspor inventori:', error);
+    Toast.show('Gagal mengekspor data', 'error');
+  }
+};
+
+const showImportModal = () => {
+  importParsed = null;
+  Modal.show({
+    title: 'Import Inventori dari CSV',
+    content: `
+      <div class="import-modal">
+        <p>Pilih file CSV dengan kolom: Kode, Nama, Kategori, Stok, Satuan, Harga, Status.</p>
+        <input type="file" id="import-file" accept=".csv,text/csv" class="input-field">
+        <div class="form-group">
+          <label>Mode Import</label>
+          <select id="import-mode" class="input-field">
+            <option value="merge">Gabung (update jika Kode sama, tambah jika baru)</option>
+            <option value="replace">Ganti Semua (hapus data lama)</option>
+          </select>
+        </div>
+        <div id="import-preview" class="import-preview"></div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="import-preview-btn" type="button">Preview</button>
+          <button class="btn btn-primary" id="import-do-btn" type="button">Import</button>
+        </div>
+      </div>
+    `,
+    onClose: () => { importParsed = null; }
+  });
+
+  const fileInput = document.getElementById('import-file');
+  if (fileInput) fileInput.addEventListener('change', onImportFileSelected);
+  const previewBtn = document.getElementById('import-preview-btn');
+  if (previewBtn) previewBtn.addEventListener('click', previewImport);
+  const doBtn = document.getElementById('import-do-btn');
+  if (doBtn) doBtn.addEventListener('click', doImport);
+};
+
+const onImportFileSelected = (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      importParsed = parseInventoryCsv(reader.result);
+      previewImport();
+    } catch (err) {
+      importParsed = null;
+      const preview = document.getElementById('import-preview');
+      if (preview) preview.innerHTML = `<p class="import-error">Gagal membaca file: ${escapeHtml(err.message)}</p>`;
+    }
+  };
+  reader.readAsText(file);
+};
+
+const previewImport = () => {
+  const preview = document.getElementById('import-preview');
+  if (!preview) return;
+  if (!importParsed) {
+    preview.innerHTML = '<p class="import-error">Pilih file terlebih dahulu.</p>';
+    return;
+  }
+  const { rows, errors } = importParsed;
+  let html = `<p><strong>${rows.length}</strong> baris valid, <strong>${errors.length}</strong> error.</p>`;
+  if (rows.length) {
+    html += '<table class="table import-preview-table"><thead><tr><th>Kode</th><th>Nama</th><th>Stok</th><th>Harga</th></tr></thead><tbody>';
+    html += rows.slice(0, 5).map((r) =>
+      `<tr><td>${escapeHtml(r.code)}</td><td>${escapeHtml(r.name)}</td><td>${r.stock}</td><td>${r.price}</td></tr>`
+    ).join('');
+    html += '</tbody></table>';
+    if (rows.length > 5) html += `<p>...dan ${rows.length - 5} baris lainnya.</p>`;
+  }
+  if (errors.length) {
+    html += '<ul class="import-error-list">' +
+      errors.slice(0, 10).map((er) => `<li>${escapeHtml(er)}</li>`).join('') +
+      '</ul>';
+  }
+  preview.innerHTML = html;
+};
+
+const doImport = () => {
+  if (!importParsed || importParsed.rows.length === 0) {
+    Toast.show('Tidak ada data valid untuk diimpor', 'error');
+    return;
+  }
+  const mode = (document.getElementById('import-mode') || {}).value || 'merge';
+  const apply = () => {
+    try {
+      const count = applyInventoryImport(importParsed.rows, mode);
+      Modal.close();
+      Toast.show(`Berhasil mengimpor ${count} barang (mode: ${mode === 'replace' ? 'ganti semua' : 'gabung'})`, 'success');
+      importParsed = null;
+      renderInventoryPage(pageContainer);
+    } catch (err) {
+      console.error('Gagal mengimpor:', err);
+      Toast.show('Gagal mengimpor data', 'error');
+    }
+  };
+  if (mode === 'replace') {
+    Modal.confirm({
+      title: 'Ganti Semua Data?',
+      content: 'Mode <strong>Ganti Semua</strong> akan menghapus seluruh data inventori saat ini dan menggantinya dengan data dari CSV. Lanjutkan?',
+      onConfirm: apply
+    });
+  } else {
+    apply();
   }
 };
 

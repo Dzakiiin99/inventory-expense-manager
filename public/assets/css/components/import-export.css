@@ -1,0 +1,52 @@
+/* Import / Export CSV UI (Sprint 6) */
+.header-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.import-modal p {
+  margin-bottom: 12px;
+  color: var(--text-secondary, #555);
+}
+
+.import-modal .form-group {
+  margin-bottom: 12px;
+}
+
+.import-modal .form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.import-preview {
+  margin-top: 12px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.import-preview-table {
+  font-size: 13px;
+}
+
+.import-error {
+  color: #EF4444;
+  font-weight: 600;
+}
+
+.import-error-list {
+  color: #EF4444;
+  margin: 8px 0 0 18px;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .header-actions {
+    width: 100%;
+  }
+  .header-actions .btn {
+    flex: 1;
+  }
+}

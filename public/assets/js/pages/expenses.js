@@ -6,6 +6,8 @@ import { Modal } from '../components/modal.js';
 import { Toast } from '../components/toast.js';
 import { createEmptyState } from '../components/empty-state.js';
 import { formatCurrency, formatDate, escapeHtml } from '../utils/index.js';
+import { exportExpensesCsv } from '../services/export.service.js';
+import { downloadFile } from '../utils/csv.js';
 
 const renderExpensesPage = async (container) => {
   Loading.show();
@@ -24,6 +26,9 @@ const renderExpensesPage = async (container) => {
       <div class="expense-page">
         <div class="page-header">
           <h1 class="page-title">Pengeluaran</h1>
+          <div class="header-actions">
+            ${Button.render({ text: 'Export CSV', variant: 'secondary', icon: 'fas fa-download', onClick: exportExpenses })}
+          </div>
         </div>
         <div class="card">
           <h2>Tambah Pengeluaran</h2>
@@ -83,6 +88,17 @@ const deleteExpense = (id, container) => {
       renderExpensesPage(container);
     }
   });
+};
+
+const exportExpenses = () => {
+  try {
+    const csv = exportExpensesCsv();
+    downloadFile('pengeluaran.csv', csv, 'text/csv;charset=utf-8');
+    Toast.show('Data pengeluaran berhasil diekspor', 'success');
+  } catch (e) {
+    console.error('Gagal ekspor pengeluaran:', e);
+    Toast.show('Gagal mengekspor data', 'error');
+  }
 };
 
 export const ExpensesPage = { render: renderExpensesPage };

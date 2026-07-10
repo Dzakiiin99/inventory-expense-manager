@@ -1,13 +1,10 @@
 /**
  * Setup navigation menu
  */
+import { NAVIGATION } from './constants.js';
+
 export function setupNavigation() {
-    const navItems = [
-        { id: "dashboard", icon: "fas fa-home", label: "Dashboard", path: "#dashboard" },
-        { id: "inventory", icon: "fas fa-boxes", label: "Inventory", path: "#inventory" },
-        { id: "expenses", icon: "fas fa-file-invoice-dollar", label: "Expenses", path: "#expenses" },
-        { id: "stock", icon: "fas fa-exchange-alt", label: "Stock Movement", path: "#stock" }
-    ];
+    const navItems = NAVIGATION.MENU;
 
     const navContainer = document.querySelector('.sidebar-nav ul');
     if (navContainer) {

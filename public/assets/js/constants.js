@@ -28,3 +28,12 @@ export const TEXT = {
     LOADING: 'Memuat...',
     EMPTY_STATE: 'Tidak ada data yang ditemukan'
 };
+
+export const NAVIGATION = {
+    MENU: [
+        { id: 'dashboard', icon: 'fas fa-home', label: 'Dashboard', path: '#dashboard' },
+        { id: 'inventory', icon: 'fas fa-boxes', label: 'Inventory', path: '#inventory' },
+        { id: 'expenses', icon: 'fas fa-file-invoice-dollar', label: 'Expenses', path: '#expenses' },
+        { id: 'stock', icon: 'fas fa-exchange-alt', label: 'Stock Movement', path: '#stock' }
+    ]
+};

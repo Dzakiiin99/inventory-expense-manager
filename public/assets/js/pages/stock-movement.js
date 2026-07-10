@@ -7,6 +7,8 @@ import { Modal } from '../components/modal.js';
 import { Toast } from '../components/toast.js';
 import { createEmptyState } from '../components/empty-state.js';
 import { formatDate, escapeHtml } from '../utils/index.js';
+import { exportStockMovementsCsv } from '../services/export.service.js';
+import { downloadFile } from '../utils/csv.js';
 
 const renderStockMovementPage = async (container) => {
   Loading.show();
@@ -27,7 +29,12 @@ const renderStockMovementPage = async (container) => {
 
     container.innerHTML = `
       <div class="stock-page">
-        <h1 class="page-title">Stok Masuk / Keluar</h1>
+        <div class="page-header">
+          <h1 class="page-title">Stok Masuk / Keluar</h1>
+          <div class="header-actions">
+            ${Button.render({ text: 'Export CSV', variant: 'secondary', icon: 'fas fa-download', onClick: exportStockMovements })}
+          </div>
+        </div>
         <div class="grid-2">
           <div class="card">
             <h2>Barang Masuk</h2>
@@ -118,6 +125,17 @@ const renderStockMovementPage = async (container) => {
     container.innerHTML = '<div class="error-state"><p>Gagal memuat data stok</p></div>';
   } finally {
     Loading.hide();
+  }
+};
+
+const exportStockMovements = () => {
+  try {
+    const csv = exportStockMovementsCsv();
+    downloadFile('stok-movement.csv', csv, 'text/csv;charset=utf-8');
+    Toast.show('Data stok berhasil diekspor', 'success');
+  } catch (e) {
+    console.error('Gagal ekspor stok:', e);
+    Toast.show('Gagal mengekspor data', 'error');
   }
 };
 

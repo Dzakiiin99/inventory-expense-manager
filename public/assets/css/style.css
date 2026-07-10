@@ -13,6 +13,7 @@
 @import url('./components/table.css');
 @import url('./components/modal.css');
 @import url('./components/toolbar.css');
+@import url('./components/import-export.css');
 @import url('./layout/section-header.css');
 @import url('./layout/page-title.css');
 @import url('./layout/action-bar.css');
@@ -192,6 +193,10 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.menu-toggle {
+    display: none;
 }
 
 .breadcrumb {
@@ -554,6 +559,36 @@
     
     .sidebar.open {
         left: 0;
+    }
+
+    .menu-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        font-size: 1.25rem;
+        color: var(--text-secondary-color);
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: var(--border-radius);
+    }
+
+    .menu-toggle:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: var(--primary-color);
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 90;
+        display: none;
+    }
+
+    .sidebar-overlay.show {
+        display: block;
     }
     
     .grid-2 {
