@@ -2,7 +2,6 @@
 // Tabel Barang menggunakan reusable components (Button, Badge)
 
 import { Button } from "./button.js";
-import { Badge } from "./badge.js";
 import { formatCurrency, escapeHtml, getStockBadgeVariant } from "../utils/index.js";
 
 export const InventoryTable = {

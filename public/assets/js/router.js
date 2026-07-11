@@ -1,6 +1,5 @@
 // Dynamic Router for UMKM CRM Lite
 import { renderDashboard } from './pages/dashboard.js';
-import { TEXT } from './constants.js';
 
 // Route configuration
 import { InventoryPage } from './pages/inventory.js';

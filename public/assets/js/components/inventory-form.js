@@ -5,7 +5,7 @@ import { Input } from "./input.js";
 import { Button } from "./button.js";
 
 export const InventoryForm = {
-  render: (item = {}, onSubmit) => {
+  render: (item = {}, _onSubmit) => {
     const isEdit = !!item.id;
     const title = isEdit ? "Edit Barang" : "Tambah Barang";
 

@@ -1,0 +1,14 @@
+{
+  "name": "umkm-crm-lite",
+  "version": "0.6.5",
+  "private": true,
+  "type": "module",
+  "description": "UMKM CRM Lite — Inventory & Expense Manager (Vanilla JS ES Modules, no framework)",
+  "scripts": {
+    "test": "node --test",
+    "lint": "eslint public/assets/js"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0"
+  }
+}
