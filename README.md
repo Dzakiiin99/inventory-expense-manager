@@ -30,13 +30,15 @@ Dibangun dengan **Vanilla JavaScript** (ES Modules, tanpa framework).
 
 | Sprint | Fokus | Status | Commit |
 |--------|-------|--------|--------|
-| **Sprint 1** | Project Foundation | ✅ Selesai | `b5475e5` |
-| **Sprint 2** | Design System (Button, Input, Badge, Modal, Card, Toast) | ✅ Selesai | `fe23170` |
-| **Sprint 3** | Inventory Module (CRUD, filter, sort, search, pagination) | ✅ Selesai | `fe23170` |
+| **Sprint 1** | Project Foundation (HTML, CSS, router, layout) | ✅ Selesai | — |
+| **Sprint 2** | Design System (Button, Input, Badge, Modal, Card, Toast) | ✅ Selesai | — |
+| **Sprint 3** | Inventory Module Foundation (CRUD, filter, sort, search, pagination) | ✅ Selesai | `7f9971d` |
 | **Sprint 4** | Expense Module + localStorage persistence | ✅ Selesai | `67201de` |
 | **Sprint 4B** | Foundation Hardening Phase 1 — utils terpusat, dead-code cleanup | ✅ Selesai | `30ab838` |
 | **Sprint 4C** | Foundation Hardening Phase 2 — re-audit XSS (inventory modal, input atribut, toast textContent) | ✅ Selesai | `30ab838` |
-| **Sprint 5** | Revision — DRY renderStats() pakai getStockLevel(); code quality | ✅ Selesai | `ec1cb74` |
+| **Sprint 5** | Inventory Management Complete (CRUD final, modal detail/edit) | ✅ Selesai | `fe23170` |
+| **Sprint 5r1** | Revision 1 — Code Quality Improvements | ✅ Selesai | `6014b7e` |
+| **Sprint 5r2** | Revision 2 — DRY: renderStats() pakai getStockLevel() | ✅ Selesai | `ec1cb74` |
 | **Sprint 6** | Data Safety & Maintainability — Export/Import CSV + framework fixes (sidebar, NAVIGATION, layout) | ✅ Selesai | `98a86a6` |
 | **Sprint 6.5** | Technical Debt Reduction — refactor inventory.js, ESLint, unit test, global error handler | ✅ Selesai | `974823a` |
 | **Sprint 7** | Customer Module (CRUD pelanggan + relasi transaksi) | 🔜 Next | — |
