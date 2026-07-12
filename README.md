@@ -3,6 +3,8 @@
 Modern Inventory & Expense Management System untuk UMKM Indonesia.
 Dibangun dengan **Vanilla JavaScript** (ES Modules, tanpa framework).
 
+**Live Demo:** https://umkm-crm-lite.netlify.app
+
 ## Tech Stack
 
 | Layer | Teknologi |
@@ -25,6 +27,13 @@ Dibangun dengan **Vanilla JavaScript** (ES Modules, tanpa framework).
 - **Global Error Handler** — anti halaman putih saat JS error
 - **XSS-Safe Rendering** — `escapeHtml` di semua titik user-data
 - **Unit Test + Lint** — Node test (14 test) + ESLint (0 warning)
+
+## Cara Coba
+
+1. **Live Demo (online):** buka https://umkm-crm-lite.netlify.app — langsung bisa dipakai tanpa install.
+2. **Lokal:** ikuti langkah di section [Development](#development) — butuh Node.js 18+, jalankan `npm install` lalu buka `public/index.html`.
+
+Data disimpan di localStorage browser masing-masing (tanpa backend), jadi aman untuk dicoba.
 
 ## Sprint Progress
 
