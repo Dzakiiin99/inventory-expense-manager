@@ -127,4 +127,4 @@ MIT
 
 ## Author
 
-Developed by **Andhi**
+Developed by **Khairul Dzakirin**
