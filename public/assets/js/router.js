@@ -5,6 +5,7 @@ import { renderDashboard } from './pages/dashboard.js';
 import { InventoryPage } from './pages/inventory.js';
 import { StockMovementPage } from './pages/stock-movement.js';
 import { ExpensesPage } from './pages/expenses.js';
+import { CustomerPage } from './pages/customer/customer.page.js';
 
 const routes = {
     'dashboard': (container) => renderDashboard(container),
@@ -19,6 +20,10 @@ const routes = {
     'expenses': (container) => {
         container.innerHTML = '<div id="app"></div>';
         ExpensesPage.render(container.querySelector('#app'));
+    },
+    'customer': (container) => {
+        container.innerHTML = '<div id="app"></div>';
+        CustomerPage.render(container.querySelector('#app'));
     }
 };
 
