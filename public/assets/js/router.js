@@ -6,6 +6,7 @@ import { InventoryPage } from './pages/inventory.js';
 import { StockMovementPage } from './pages/stock-movement.js';
 import { ExpensesPage } from './pages/expenses.js';
 import { CustomerPage } from './pages/customer/customer.page.js';
+import { TransactionPage } from './pages/transaction/transaction.page.js';
 
 const routes = {
     'dashboard': (container) => renderDashboard(container),
@@ -24,6 +25,10 @@ const routes = {
     'customer': (container) => {
         container.innerHTML = '<div id="app"></div>';
         CustomerPage.render(container.querySelector('#app'));
+    },
+    'transaction': (container) => {
+        container.innerHTML = '<div id="app"></div>';
+        TransactionPage.render(container.querySelector('#app'));
     }
 };
 
