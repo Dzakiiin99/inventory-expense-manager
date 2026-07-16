@@ -11,8 +11,8 @@
   cursor: pointer;
   transition: background-color .15s ease;
 }
-.btn-primary { background: var(--color-primary, #3B82F6); color: #fff; }
-.btn-primary:hover { background: var(--color-primary-hover, #2563EB); }
+.btn-primary { background: var(--primary-color); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); }
 .btn-secondary { background: #6B7280; color: #fff; }
 .btn-secondary:hover { background: #4B5563; }
 .btn-danger { background: #EF4444; color: #fff; }
