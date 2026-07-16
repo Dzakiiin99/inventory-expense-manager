@@ -1,8 +1,42 @@
+/* global crypto: readonly */
 // services/export.service.js
 // CSV export + inventory import orchestration.
 // Reads/writes storage directly via utils/storage.js (defensive).
 import { safeGet, safeSet, STORAGE_KEYS } from '../utils/storage.js';
 import { arrayToCsv, parseCsv } from '../utils/csv.js';
+
+const CODE_RE = /^INV-(\d+)$/;
+
+/**
+ * Generate id unik (Primary Key internal).
+ * Pola konsisten dengan customer.service.js / inventory.service.js.
+ * @returns {string}
+ */
+function _generateId() {
+  try {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+  } catch { /* fallback */ }
+  return 'inv_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+
+/**
+ * Hitung max numeric suffix dari code INV-XXX yang ada.
+ * @param {Array<object>} items
+ * @returns {number}
+ */
+function _maxCodeSuffix(items) {
+  let max = 0;
+  for (const it of items) {
+    const m = CODE_RE.exec(it.code || '');
+    if (m) {
+      const n = parseInt(m[1], 10);
+      if (n > max) max = n;
+    }
+  }
+  return max;
+}
 
 const INVENTORY_HEADERS = ['Kode', 'Nama', 'Kategori', 'Stok', 'Satuan', 'Harga', 'Status'];
 
@@ -108,21 +142,28 @@ export function parseInventoryCsv(text) {
 export function applyInventoryImport(rows, mode = 'merge') {
   const existing = safeGet(STORAGE_KEYS.INVENTORY);
   if (mode === 'replace') {
-    safeSet(STORAGE_KEYS.INVENTORY, rows);
-    return rows.length;
+    // replace: generate id & code untuk setiap row yang belum punya
+    let maxCode = _maxCodeSuffix(rows);
+    const result = rows.map((row) => {
+      const id = row.id || _generateId();
+      const code = row.code || `INV-${String(++maxCode).padStart(3, '0')}`;
+      return { id, code, ...row };
+    });
+    safeSet(STORAGE_KEYS.INVENTORY, result);
+    return result.length;
   }
   // merge: update by code if exists, else add as new item
   const byCode = new Map(existing.map((it) => [it.code, it]));
-  let maxId = existing.reduce((m, it) => Math.max(m, parseInt(it.id, 10) || 0), 0);
+  let maxCode = _maxCodeSuffix(existing);
   const result = existing.slice();
   for (const row of rows) {
-    const code = row.code || `INV-${String(++maxId).padStart(3, '0')}`;
+    const code = row.code || `INV-${String(++maxCode).padStart(3, '0')}`;
     const prev = byCode.get(code);
     if (prev) {
       const idx = result.findIndex((it) => it.code === code);
       result[idx] = { ...result[idx], ...row, code, id: prev.id };
     } else {
-      const id = String(++maxId);
+      const id = _generateId();
       const item = { id, code, ...row };
       result.push(item);
       byCode.set(code, item);
@@ -130,4 +171,46 @@ export function applyInventoryImport(rows, mode = 'merge') {
   }
   safeSet(STORAGE_KEYS.INVENTORY, result);
   return result.length;
+}
+
+/**
+ * Export report data to CSV and trigger download.
+ * Hanya menerima rows dan headers, tidak ada business logic.
+ * @param {Array<Array<string|number>>} rows - data rows
+ * @param {Array<string>} headers - column headers
+ */
+export function exportReportCsv(rows, headers) {
+  // Escape CSV field sesuai RFC 4180
+  const escapeCsvField = (field) => {
+    const str = String(field ?? '');
+    // Jika mengandung koma, kutip, atau newline, bungkus dengan kutip
+    if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+      return '"' + str.replace(/"/g, '""') + '"';
+    }
+    return str;
+  };
+
+  // Build CSV content
+  const headerLine = headers.map(escapeCsvField).join(',');
+  const dataLines = (rows || []).map((row) => row.map(escapeCsvField).join(','));
+  const csvContent = [headerLine, ...dataLines].join('\n');
+
+  // Trigger download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+
+  // Filename: report-YYYY-MM-DD.csv
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  a.download = `report-${yyyy}-${mm}-${dd}.csv`;
+
+  // Download + cleanup
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
