@@ -1,3 +1,4 @@
+/* global MutationObserver */
 // Button Component for UMKM CRM Lite
 import { COLORS } from '../constants.js';
 
@@ -77,18 +78,50 @@ export function createButton(text, variant = 'primary', icon, onClick) {
 // Button.render: returns an HTML string (safe for template literals / innerHTML)
 // and wires onClick via a single document-level delegated listener, so closures
 // work even when the button is injected as a string.
+//
+// Memory-leak fix: MutationObserver watches the DOM for button removals and
+// automatically cleans up orphaned handler entries. Combined with `subtree`
+// monitoring, this ensures the _handlers Map never grows unboundedly — entries
+// are removed as soon as their DOM elements are garbage-collected.
+
 const _handlers = new Map();
 let _seq = 0;
 let _delegated = false;
 
+function _cleanupOrphans(root) {
+  const removed = root.querySelectorAll
+    ? root.querySelectorAll('[data-btn-id]')
+    : [];
+  removed.forEach((el) => _handlers.delete(el.getAttribute('data-btn-id')));
+}
+
 function _ensureDelegation() {
   if (_delegated) return;
+
+  // Delegated click listener — single handler for all Button.render() buttons
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-btn-id]');
     if (!btn) return;
     const handler = _handlers.get(btn.getAttribute('data-btn-id'));
     if (handler) handler();
   });
+
+  // MutationObserver: auto-cleanup handlers when buttons are removed from DOM.
+  // subtree:true covers all descendants — lightweight for small/medium DOMs.
+  const observer = new MutationObserver((mutations) => {
+    for (const mut of mutations) {
+      for (const node of mut.removedNodes) {
+        if (node.nodeType !== 1) continue;
+        // Clean up the removed node itself + any descendant buttons
+        if (node.hasAttribute && node.hasAttribute('data-btn-id')) {
+          _handlers.delete(node.getAttribute('data-btn-id'));
+        }
+        _cleanupOrphans(node);
+      }
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
   _delegated = true;
 }
 
