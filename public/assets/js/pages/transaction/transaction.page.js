@@ -11,7 +11,7 @@ import { StockMovementService } from '../../services/stock-movement.service.js';
 import { Loading } from '../../components/loading-state.js';
 import { Modal } from '../../components/modal.js';
 import { Toast } from '../../components/toast.js';
-import { escapeHtml, formatCurrency, formatDate } from '../../utils/index.js';
+import { escapeHtml, formatCurrency, formatDate, escapeAttr } from '../../utils/index.js';
 import {
   state,
   PAGE_SIZE,
@@ -641,19 +641,7 @@ function populateCustomerFilter(container) {
       .join('');
 }
 
-/**
- * Escape string untuk atribut HTML (mencegah XSS di value="...").
- * @param {string} str
- * @returns {string}
- */
-function escapeAttr(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
+// ─── HELPER ──────────────────────────────────────────────────────
 
 /**
  * Reset filter bawaan saat load.

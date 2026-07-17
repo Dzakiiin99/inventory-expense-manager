@@ -27,3 +27,18 @@ export function escapeHtml(str) {
 export function sanitizeInput(input) {
   return escapeHtml(String(input).trim());
 }
+
+/**
+ * Escape string untuk atribut HTML (mencegah XSS di value="...").
+ * Single source of truth — dipakai oleh page modules (customer, transaction, report).
+ * @param {string} str
+ * @returns {string}
+ */
+export function escapeAttr(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}

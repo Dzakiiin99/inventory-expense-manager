@@ -6,7 +6,7 @@ import { CustomerService } from '../../services/customer.service.js';
 import { Loading } from '../../components/loading-state.js';
 import { Modal } from '../../components/modal.js';
 import { Toast } from '../../components/toast.js';
-import { escapeHtml } from '../../utils/index.js';
+import { escapeHtml, escapeAttr, formatDate } from '../../utils/index.js';
 import {
   state,
   PAGE_SIZE,
@@ -349,22 +349,6 @@ async function refreshData(container) {
     console.error('Gagal refresh data customer:', err);
     Toast.show('Gagal memuat data pelanggan', 'error');
   }
-}
-
-// ─── HELPER ──────────────────────────────────────────────────────
-
-/**
- * Escape string untuk atribut HTML (mencegah XSS di value="...").
- * @param {string} str
- * @returns {string}
- */
-function escapeAttr(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
 }
 
 // ─── MAIN PAGE RENDER ────────────────────────────────────────────
