@@ -71,4 +71,9 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-export const Toast = { show };
+export const Toast = {
+  show,
+  success: (message, duration) => show(message, 'success', duration),
+  error: (message, duration) => show(message, 'error', duration),
+  info: (message, duration) => show(message, 'info', duration)
+};
