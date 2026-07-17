@@ -198,10 +198,9 @@ function showAddForm(container) {
  * @param {string} id
  */
 async function showEditForm(container, id) {
+  Loading.show();
   try {
-    Loading.show();
     const customer = await CustomerService.getCustomerById(id);
-    Loading.hide();
 
     if (!customer) {
       Toast.show('Pelanggan tidak ditemukan', 'error');
@@ -271,8 +270,9 @@ async function showEditForm(container, id) {
       cancelBtn.addEventListener('click', () => Modal.close());
     }
   } catch {
-    Loading.hide();
     Toast.show('Gagal memuat data pelanggan', 'error');
+  } finally {
+    Loading.hide();
   }
 }
 
@@ -282,10 +282,9 @@ async function showEditForm(container, id) {
  * @param {string} id
  */
 async function showDetail(container, id) {
+  Loading.show();
   try {
-    Loading.show();
     const c = await CustomerService.getCustomerById(id);
-    Loading.hide();
 
     if (!c) {
       Toast.show('Pelanggan tidak ditemukan', 'error');
@@ -308,8 +307,9 @@ async function showDetail(container, id) {
 
     Modal.show({ title: `Detail Pelanggan — ${c.customerCode}`, content: detailHtml });
   } catch {
-    Loading.hide();
     Toast.show('Gagal memuat data pelanggan', 'error');
+  } finally {
+    Loading.hide();
   }
 }
 
