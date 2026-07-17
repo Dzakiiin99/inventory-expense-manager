@@ -116,6 +116,11 @@ const renderStockMovementPage = async (container) => {
         return;
       }
 
+      if (jumlah > selectedItem.stock) {
+        Toast.error(`Stok tidak cukup. Stok tersedia: ${selectedItem.stock}`);
+        return;
+      }
+
       Modal.confirm({
         title: 'Konfirmasi Stok Keluar',
         content: `Kurangi ${jumlah} unit <strong>${escapeHtml(selectedItem?.name || '')}</strong> dari stok?`,
