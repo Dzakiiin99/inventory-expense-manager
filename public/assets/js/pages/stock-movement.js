@@ -82,7 +82,12 @@ const renderStockMovementPage = async (container) => {
       const barangId = f.get('barangId');
       const jumlah = parseInt(f.get('jumlah'));
       const selectedItem = items.find(i => i.id === barangId);
-      
+
+      if (!Number.isInteger(jumlah) || jumlah <= 0) {
+        Toast.error('Jumlah harus berupa angka positif');
+        return;
+      }
+
       Modal.confirm({
         title: 'Konfirmasi Stok Masuk',
         content: `Tambah ${jumlah} unit <strong>${escapeHtml(selectedItem?.name || '')}</strong> ke stok?`,
@@ -105,7 +110,12 @@ const renderStockMovementPage = async (container) => {
       const barangId = f.get('barangId');
       const jumlah = parseInt(f.get('jumlah'));
       const selectedItem = items.find(i => i.id === barangId);
-      
+
+      if (!Number.isInteger(jumlah) || jumlah <= 0) {
+        Toast.error('Jumlah harus berupa angka positif');
+        return;
+      }
+
       Modal.confirm({
         title: 'Konfirmasi Stok Keluar',
         content: `Kurangi ${jumlah} unit <strong>${escapeHtml(selectedItem?.name || '')}</strong> dari stok?`,
