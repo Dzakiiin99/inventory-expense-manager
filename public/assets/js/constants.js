@@ -36,6 +36,7 @@ export const NAVIGATION = {
         { id: 'expenses', icon: 'fas fa-file-invoice-dollar', label: 'Expenses', path: '#expenses' },
         { id: 'stock', icon: 'fas fa-exchange-alt', label: 'Stock Movement', path: '#stock' },
         { id: 'customer', icon: 'fas fa-users', label: 'Pelanggan', path: '#customer' },
-        { id: 'transaction', icon: 'fas fa-receipt', label: 'Transaksi', path: '#transaction' }
+        { id: 'transaction', icon: 'fas fa-receipt', label: 'Transaksi', path: '#transaction' },
+        { id: 'report', icon: 'fas fa-chart-bar', label: 'Laporan', path: '#report' }
     ]
 };

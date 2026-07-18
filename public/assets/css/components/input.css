@@ -1,25 +1,32 @@
 /* components/input.css */
 .input-field {
   width: 100%;
-  padding: .5rem;
-  border: 1px solid var(--border-color, #E5E7EB);
-  border-radius: 6px;
-  margin-top: .25rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  font-size: 0.875rem;
+  color: var(--text-color);
+  background-color: var(--surface-color);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
-  font-size: .9rem;
 }
 .input-field:focus {
   outline: none;
-  border-color: var(--color-primary, #3B82F6);
-  box-shadow: 0 0 0 2px rgba(59,130,246,.2);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+.input-field::placeholder {
+  color: var(--text-secondary);
 }
 .form-group {
-  margin-bottom: .75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 .form-group label {
-  display: block;
-  font-size: .85rem;
-  color: var(--text-secondary, #374151);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
 }
 select.input-field {
   background: #fff;

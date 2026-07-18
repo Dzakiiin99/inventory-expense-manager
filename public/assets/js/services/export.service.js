@@ -214,3 +214,19 @@ export function exportReportCsv(rows, headers) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+/**
+ * ExportService — facade agar page modules bisa memanggil
+ * ExportService.exportReportCsv(rows, headers) tanpa bergantung
+ * pada nama fungsi internal. Backward-compatible: fungsi
+ * exportInventoryCsv/exportExpensesCsv/exportStockMovementsCsv/
+ * parseInventoryCsv/applyInventoryImport tetap sebagai named export.
+ */
+export const ExportService = {
+  exportInventoryCsv,
+  exportExpensesCsv,
+  exportStockMovementsCsv,
+  parseInventoryCsv,
+  applyInventoryImport,
+  exportReportCsv
+};

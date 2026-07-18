@@ -2,86 +2,114 @@
 import { renderDashboard } from './pages/dashboard.js';
 import { NAVIGATION } from './constants.js';
 
-// Route configuration
-import { InventoryPage } from './pages/inventory.js';
-import { StockMovementPage } from './pages/stock-movement.js';
-import { ExpensesPage } from './pages/expenses.js';
-import { CustomerPage } from './pages/customer/customer.page.js';
-import { TransactionPage } from './pages/transaction/transaction.page.js';
-import { ReportPage } from './pages/report/report.page.js';
-
-const routes = {
-    'dashboard': (container) => renderDashboard(container),
-    'inventory': (container) => {
-        container.innerHTML = '<div id="app"></div>';
-        InventoryPage.render(container.querySelector('#app'));
-    },
-    'stock': (container) => {
-        container.innerHTML = '<div id="app"></div>';
-        StockMovementPage.render(container.querySelector('#app'));
-    },
-    'expenses': (container) => {
-        container.innerHTML = '<div id="app"></div>';
-        ExpensesPage.render(container.querySelector('#app'));
-    },
-    'customer': (container) => {
-        container.innerHTML = '<div id="app"></div>';
-        CustomerPage.render(container.querySelector('#app'));
-    },
-    'transaction': (container) => {
-        container.innerHTML = '<div id="app"></div>';
-        TransactionPage.render(container.querySelector('#app'));
-    },
-    'report': (container) => {
-        container.innerHTML = '<div id="app"></div>';
-        ReportPage.render(container.querySelector('#app'));
-    }
+// Lazy-loaded page modules. Each entry resolves its module + the exported
+// page object. Using dynamic import() means a single failing route module
+// (e.g. a 404 in production) can no longer abort the entire module graph
+// before initApp() runs — only that one route degrades, the rest keep working.
+const ROUTE_LOADERS = {
+    inventory: { loader: () => import('./pages/inventory.js'), exportName: 'InventoryPage' },
+    stock: { loader: () => import('./pages/stock-movement.js'), exportName: 'StockMovementPage' },
+    expenses: { loader: () => import('./pages/expenses.js'), exportName: 'ExpensesPage' },
+    customer: { loader: () => import('./pages/customer/customer.page.js'), exportName: 'CustomerPage' },
+    transaction: { loader: () => import('./pages/transaction/transaction.page.js'), exportName: 'TransactionPage' },
+    report: { loader: () => import('./pages/report/report.page.js'), exportName: 'ReportPage' }
 };
 
 /**
  * Initialize the router
  */
-export function initRouter() {
+export async function initRouter() {
     const contentArea = document.getElementById('content-area');
     if (!contentArea) {
         console.error('Content area not found');
         return;
     }
-    
+
     // Load initial route
     const hash = window.location.hash.substring(1) || 'dashboard';
-    loadRoute(hash, contentArea);
+    await loadRoute(hash, contentArea);
     updateBreadcrumb();
-    
+
     // Handle navigation changes
     window.addEventListener('hashchange', () => {
         const newHash = window.location.hash.substring(1) || 'dashboard';
         loadRoute(newHash, contentArea);
         updateBreadcrumb();
     });
-    
+
     // Setup sidebar navigation active state
     setupSidebarActiveState();
 }
 
 /**
- * Load the appropriate route
+ * Load the appropriate route.
+ * A failure loading ONE route shows a visible message in that route's
+ * container instead of blanking the whole application.
  * @param {string} route - Route to load
  * @param {HTMLElement} container - Container to render the route
  */
-function loadRoute(route, container) {
+async function loadRoute(route, container) {
     // Clear content area
     container.innerHTML = '';
-    
-    // Load the route if it exists
-    if (routes[route]) {
-        routes[route](container);
-    } else {
-        // Fallback to dashboard
+
+    // Dashboard is imported statically (entry page, always available).
+    if (route === 'dashboard') {
+        try {
+            await renderDashboard(container);
+        } catch (err) {
+            console.error('[Router] Gagal merender dashboard:', err);
+            renderRouteError(container, 'Dashboard', err);
+        }
+        return;
+    }
+
+    const entry = ROUTE_LOADERS[route];
+    if (!entry) {
+        // Unknown route -> fallback to dashboard
         console.warn(`Route '${route}' not found. Falling back to dashboard.`);
         window.location.hash = '#dashboard';
-        renderDashboard(container);
+        try {
+            await renderDashboard(container);
+        } catch (err) {
+            renderRouteError(container, 'Dashboard', err);
+        }
+        return;
     }
+
+    try {
+        const mod = await entry.loader();
+        const Page = mod[entry.exportName];
+        if (!Page || typeof Page.render !== 'function') {
+            throw new Error(`Ekspor '${entry.exportName}' tidak ditemukan di modul route '${route}'.`);
+        }
+        container.innerHTML = '<div id="app"></div>';
+        Page.render(container.querySelector('#app'));
+    } catch (err) {
+        console.error(`[Router] Gagal memuat route '${route}':`, err);
+        renderRouteError(container, route, err);
+    }
+}
+
+/**
+ * Render a visible, non-blank error state for a failed route so the user
+ * sees feedback instead of an empty <main>.
+ */
+function renderRouteError(container, route, err) {
+    const safeRoute = String(route || 'unknown').replace(/[^\w-]/g, '');
+    const message = (err && err.message) ? err.message : 'Unknown error';
+    const box = document.createElement('div');
+    box.className = 'route-error';
+    box.setAttribute('role', 'alert');
+    box.style.cssText =
+        'padding:2rem;color:#c0392b;font-family:sans-serif;font-size:14px;line-height:1.5';
+    const title = document.createElement('strong');
+    title.textContent = `Halaman "${safeRoute}" gagal dimuat.`;
+    const detail = document.createElement('div');
+    detail.style.marginTop = '0.5rem';
+    detail.textContent = 'Detail: ' + message;
+    box.appendChild(title);
+    box.appendChild(detail);
+    container.appendChild(box);
 }
 
 /**
@@ -92,7 +120,7 @@ function loadRoute(route, container) {
 function updateBreadcrumb() {
     const breadcrumb = document.querySelector('.breadcrumb span');
     if (!breadcrumb) return;
-    
+
     const hash = window.location.hash.substring(1) || 'dashboard';
     const menuItem = NAVIGATION.MENU.find((item) => item.id === hash);
     breadcrumb.textContent = menuItem ? menuItem.label : 'Dashboard';
@@ -103,10 +131,10 @@ function updateBreadcrumb() {
  */
 function setupSidebarActiveState() {
     const navLinks = document.querySelectorAll('.sidebar-nav a');
-    
+
     function updateActiveLink() {
         const hash = window.location.hash.substring(1) || 'dashboard';
-        
+
         navLinks.forEach(link => {
             const href = link.getAttribute('href').substring(1);
             if (href === hash) {
@@ -116,10 +144,10 @@ function setupSidebarActiveState() {
             }
         });
     }
-    
+
     // Update on load
     updateActiveLink();
-    
+
     // Update on hash change
     window.addEventListener('hashchange', updateActiveLink);
 }

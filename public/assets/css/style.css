@@ -18,7 +18,7 @@
 @import url('./layout/page-title.css');
 @import url('./layout/action-bar.css');
 
-/* Existing Styles */
+/* ---- Layout: App Shell ---- */
 .app {
     display: flex;
     min-height: 100vh;
@@ -76,7 +76,7 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1.5rem;
-    color: var(--text-secondary-color);
+    color: var(--text-secondary);
     text-decoration: none;
     transition: all 0.2s ease;
 }
@@ -151,14 +151,14 @@
 
 .user-role {
     font-size: 0.75rem;
-    color: var(--text-secondary-color);
+    color: var(--text-secondary);
 }
 
 .logout-btn {
     margin-left: auto;
     background: none;
     border: none;
-    color: var(--text-secondary-color);
+    color: var(--text-secondary);
     cursor: pointer;
     padding: 0.25rem;
     border-radius: 50%;
@@ -170,7 +170,7 @@
     color: var(--danger-color);
 }
 
-/* Main Content Styles */
+/* ---- Layout: Main Content ---- */
 .main-content {
     flex: 1;
     display: flex;
@@ -200,7 +200,7 @@
 }
 
 .breadcrumb {
-    color: var(--text-secondary-color);
+    color: var(--text-secondary);
     font-size: 0.875rem;
 }
 
@@ -218,7 +218,7 @@
 .notification-btn {
     background: none;
     border: none;
-    color: var(--text-secondary-color);
+    color: var(--text-secondary);
     font-size: 1.25rem;
     cursor: pointer;
     position: relative;
@@ -250,75 +250,7 @@
     background-color: var(--background-color);
 }
 
-/* Dashboard Grid */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-}
-
-/* Page Title */
-.page-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text-color);
-    margin-bottom: 1.5rem;
-}
-
-/* Page Header */
-.page-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.5rem;
-}
-
-/* Card */
-.card {
-    background-color: var(--surface-color);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.card h2 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-color);
-    margin-bottom: 1rem;
-}
-
-/* Table */
-.table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.table th,
-.table td {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.table th {
-    font-weight: 600;
-    color: var(--text-color);
-    background-color: var(--background-color);
-}
-
-.table td {
-    color: var(--text-secondary-color);
-}
-
-.table-actions {
-    display: flex;
-    gap: 0.5rem;
-}
-
-/* Form */
+/* ---- Form (layout, bukan component) ---- */
 .form {
     display: flex;
     flex-direction: column;
@@ -332,53 +264,13 @@
     margin-bottom: 0.5rem;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.form-group label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text-color);
-}
-
 .form-actions {
     display: flex;
     gap: 0.75rem;
     margin-top: 0.5rem;
 }
 
-/* Input Field */
-.input-field {
-    padding: 0.625rem 0.875rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-md);
-    font-size: 0.875rem;
-    color: var(--text-color);
-    background-color: var(--surface-color);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.input-field:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.input-field::placeholder {
-    color: var(--text-secondary-color);
-}
-
-/* Grid */
-.grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-}
-
-/* Detail Content */
+/* ---- Detail Content ---- */
 .detail-content p {
     padding: 0.5rem 0;
     border-bottom: 1px solid var(--border-color);
@@ -390,47 +282,7 @@
     border-bottom: none;
 }
 
-/* Stat Card */
-.stat-card {
-    background-color: var(--surface-color);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.stat-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.stat-card-icon {
-    width: 3rem;
-    height: 3rem;
-    border-radius: var(--border-radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.25rem;
-}
-
-.stat-card-title {
-    font-size: 0.875rem;
-    color: var(--text-secondary-color);
-    font-weight: 500;
-}
-
-.stat-card-value {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text-color);
-}
-
-/* Expense Page */
+/* ---- Page-specific styles ---- */
 .expense-page .card h2 {
     font-size: 1rem;
     font-weight: 600;
@@ -438,7 +290,6 @@
     margin-bottom: 1rem;
 }
 
-/* Stock Page */
 .stock-page h1 {
     font-size: 1.5rem;
     font-weight: 600;
@@ -453,7 +304,6 @@
     margin-bottom: 1rem;
 }
 
-/* Inventory Page */
 .inventory-page .page-header {
     display: flex;
     align-items: center;
@@ -467,88 +317,9 @@
     color: var(--text-color);
 }
 
-/* Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.modal-box {
-    background-color: var(--surface-color);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
-    width: 100%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.modal-header h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-color);
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--text-secondary-color);
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: var(--border-radius-sm);
-    transition: background-color 0.2s ease;
-}
-
-.modal-close:hover {
-    background-color: var(--background-color);
-    color: var(--text-color);
-}
-
-.modal-body {
-    padding: 1.5rem;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: flex-end;
-    margin-top: 1.5rem;
-}
-
-/* Badge variants */
-.badge-success {
-    background-color: rgba(16, 185, 129, 0.1);
-    color: var(--success-color);
-}
-
-.badge-warning {
-    background-color: rgba(245, 158, 11, 0.1);
-    color: var(--warning-color);
-}
-
-.badge-danger {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: var(--danger-color);
-}
-
-/* Responsive */
+/* ---- Responsive ---- */
+/* NOTE: breakpoint hardcoded karena custom property tidak valid
+   di kondisi media query (CSS spec limitation). */
 @media (max-width: 768px) {
     .sidebar {
         position: fixed;
@@ -556,7 +327,7 @@
         width: 100%;
         transition: left 0.3s ease;
     }
-    
+
     .sidebar.open {
         left: 0;
     }
@@ -568,7 +339,7 @@
         background: none;
         border: none;
         font-size: 1.25rem;
-        color: var(--text-secondary-color);
+        color: var(--text-secondary);
         cursor: pointer;
         padding: 0.5rem;
         border-radius: var(--border-radius);
@@ -589,13 +360,5 @@
 
     .sidebar-overlay.show {
         display: block;
-    }
-    
-    .grid-2 {
-        grid-template-columns: 1fr;
-    }
-    
-    .dashboard-grid {
-        grid-template-columns: 1fr;
     }
 }

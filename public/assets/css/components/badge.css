@@ -6,8 +6,8 @@
   font-size: .75rem;
   font-weight: 500;
 }
-.badge-success { background: #D1FAE5; color: #065F46; }
-.badge-warning { background: #FEF3C7; color: #92400E; }
-.badge-danger { background: #FEE2E2; color: #991B1B; }
+.badge-success { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+.badge-warning { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
+.badge-danger { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
 .badge-info { background: #E0F2FE; color: #075985; }
 .badge-default { background: #E5E7EB; color: #374151; }
